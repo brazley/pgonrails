@@ -2,6 +2,39 @@ _format_version: '2.1'
 _transform: true
 
 ###
+### Global Plugins
+###
+plugins:
+  - name: cors
+    config:
+      origins:
+        - "*"
+      methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+        - OPTIONS
+        - HEAD
+      headers:
+        - Accept
+        - Accept-Version
+        - Authorization
+        - Content-Type
+        - Content-Length
+        - apikey
+        - x-client-info
+        - x-supabase-api-version
+        - X-Request-Id
+      exposed_headers:
+        - X-Request-Id
+        - X-Supabase-Api-Version
+      credentials: true
+      max_age: 3600
+      preflight_continue: false
+
+###
 ### Consumers / Users
 ###
 consumers:
@@ -37,8 +70,6 @@ services:
         strip_path: true
         paths:
           - /auth/v1/verify
-    plugins:
-      - name: cors
   - name: auth-v1-open-callback
     url: http://$AUTH_HOST:$AUTH_PORT/callback
     routes:
@@ -46,8 +77,6 @@ services:
         strip_path: true
         paths:
           - /auth/v1/callback
-    plugins:
-      - name: cors
   - name: auth-v1-open-authorize
     url: http://$AUTH_HOST:$AUTH_PORT/authorize
     routes:
@@ -55,8 +84,6 @@ services:
         strip_path: true
         paths:
           - /auth/v1/authorize
-    plugins:
-      - name: cors
 
   ## Secure Auth routes
   - name: auth-v1
@@ -68,7 +95,6 @@ services:
         paths:
           - /auth/v1/
     plugins:
-      - name: cors
       - name: key-auth
         config:
           hide_credentials: false
@@ -89,7 +115,6 @@ services:
         paths:
           - /rest/v1/
     plugins:
-      - name: cors
       - name: key-auth
         config:
           hide_credentials: true
@@ -110,7 +135,6 @@ services:
         paths:
           - /graphql/v1
     plugins:
-      - name: cors
       - name: key-auth
         config:
           hide_credentials: true
@@ -137,7 +161,6 @@ services:
         paths:
           - /realtime/v1/
     plugins:
-      - name: cors
       - name: key-auth
         config:
           hide_credentials: false
@@ -157,7 +180,6 @@ services:
         paths:
           - /realtime/v1/api
     plugins:
-      - name: cors
       - name: key-auth
         config:
           hide_credentials: false
@@ -167,7 +189,7 @@ services:
           allow:
             - admin
             - anon
-  
+
   ## Storage routes - the storage server manages its own auth
   - name: storage-v1
     _comment: 'Storage: /storage/v1/* -> http://storage:5000/*'
@@ -177,8 +199,6 @@ services:
         strip_path: true
         paths:
           - /storage/v1/
-    plugins:
-      - name: cors
 
   ## Edge Functions routes
   - name: functions-v1
@@ -189,8 +209,6 @@ services:
         strip_path: true
         paths:
           - /functions/v1/
-    plugins:
-      - name: cors
 
   ## Analytics routes
   - name: analytics-v1
@@ -273,7 +291,6 @@ services:
         paths:
           - /
     plugins:
-      - name: cors
       - name: basic-auth
         config:
           hide_credentials: true
